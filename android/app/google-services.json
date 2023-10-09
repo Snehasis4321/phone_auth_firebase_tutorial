@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041206382731",
+    "project_id": "phone-auth-15bdb",
+    "storage_bucket": "phone-auth-15bdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041206382731:android:3bd02e417c5123ef45448e",
+        "android_client_info": {
+          "package_name": "com.example.phone_auth_firebase_tutorial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNgBCk6Y24KvTFf-Kz5lsMaCgPN7YDZLA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
