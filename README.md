@@ -1,16 +1,34 @@
-# phone_auth_firebase_tutorial
+# Phone authentication tutorial flutter firebase
 
-A new Flutter project.
+the repository containes the full code to add phone authentication using firebase in flutter
 
-## Getting Started
+## Functionality
+- Sent OTP to the phone number
+- Verify the OTP received
 
-This project is a starting point for a Flutter application.
+## [Watch the video here](https://youtu.be/5gkJ8ZfbCHw) 
+![PHONE AUTH (1)(1)](https://github.com/Snehasis4321/phone_auth_firebase_tutorial/assets/96995340/f550e999-d75f-4f84-a983-1708dbad9614)
 
-A few resources to get you started if this is your first Flutter project:
+[Link Here](https://youtu.be/5gkJ8ZfbCHw)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Important for phone auth
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+to view sha 1/ sha256 key for phone auth use this command to 
+
+visit .android folder and then debug.keystore is there run this otherwise generate a debug key and run this command to show sha1 key
+
+Cmd to view 
+```
+keytool -list -v -keystore debug.keystore -alias androiddebugkey
+```
+
+cmd to create new key store file 
+
+Run this to  create first then run above command
+
+```
+keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000
+```
+
+make sure to run the command inside .android folder of your username
+
