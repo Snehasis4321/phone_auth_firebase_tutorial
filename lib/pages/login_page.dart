@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phone_auth_firebase_tutorial/controllers/auth_service.dart';
 import 'package:phone_auth_firebase_tutorial/pages/home_page.dart';
+import 'package:telephony/telephony.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,11 +14,57 @@ class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
+  final Telephony telephony = Telephony.instance;
+
   TextEditingController _phoneContoller = TextEditingController();
   TextEditingController _otpContoller = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   final _formKey1 = GlobalKey<FormState>();
+
+  void listenToIncomingSMS(BuildContext context) {
+    print("Listening to sms.");
+    telephony.listenIncomingSms(
+        onNewMessage: (SmsMessage message) {
+          // Handle message
+          print("sms received : ${message.body}");
+          // verify if we are reading the correct sms or not
+
+          if (message.body!.contains("phone-auth-15bdb")) {
+            String otpCode = message.body!.substring(0, 6);
+            setState(() {
+              _otpContoller.text = otpCode;
+              // wait for 1 sec and then press handle submit
+              Future.delayed(Duration(seconds: 1), () {
+                handleSubmit(context);
+              });
+            });
+          }
+        },
+        listenInBackground: false);
+  }
+
+// handle after otp is submitted
+  void handleSubmit(BuildContext context) {
+    if (_formKey1.currentState!.validate()) {
+      AuthService.loginWithOtp(otp: _otpContoller.text).then((value) {
+        if (value == "Success") {
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        } else {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              value,
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ));
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -96,6 +143,8 @@ class _LoginPageState extends State<LoginPage>
                                       backgroundColor: Colors.red,
                                     )),
                                 nextStep: () {
+                                  // start lisenting for otp
+                                  listenToIncomingSMS(context);
                                   showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
@@ -134,43 +183,8 @@ class _LoginPageState extends State<LoginPage>
                                             ),
                                             actions: [
                                               TextButton(
-                                                  onPressed: () {
-                                                    if (_formKey1.currentState!
-                                                        .validate()) {
-                                                      AuthService.loginWithOtp(
-                                                              otp: _otpContoller
-                                                                  .text)
-                                                          .then((value) {
-                                                        if (value ==
-                                                            "Success") {
-                                                          Navigator.pop(
-                                                              context);
-                                                          Navigator.pushReplacement(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          HomePage()));
-                                                        } else {
-                                                          Navigator.pop(
-                                                              context);
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                                  SnackBar(
-                                                            content: Text(
-                                                              value,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            backgroundColor:
-                                                                Colors.red,
-                                                          ));
-                                                        }
-                                                      });
-                                                    }
-                                                  },
+                                                  onPressed: () =>
+                                                      handleSubmit(context),
                                                   child: Text("Submit"))
                                             ],
                                           ));
